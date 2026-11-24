@@ -103,7 +103,7 @@ filter[Role:Contains:Graph:'':role=EnemyGroup1;Role:NotContains:Graph:'':role=Ar
 |---|---|---|---|
 | 初始计时 | 300 秒 | **60 秒** | `StartTimer before=300` → `-> 60` |
 | 击毁火炮加时 | +100 秒 | **+40 秒** | `TimerAdd before: Time=100` → `+40` |
-| 第二组加时 | 500 秒 Set | 200 秒 Add | `[60] Node time=200 mod=Add` |
+| 第二组加时 | 500 秒 Set | 200 秒 Add | `[60] Node time=200 mod=Add` — **建节点+删旧节点，不在 JSON 规则内**，见 `docs/mission-rules.md` 第 5 节 |
 | 步兵 | 4 个（改 20） | 20 个 | `spawn[0]` |
 | 炮兵 | 3 + 2 | 8 + 2 | `spawn[4]` / `spawn[5]` |
 | 碉堡→补给仓库 | 无 | 3 个 | `spawn[3]` 改自 FinalHarvest |

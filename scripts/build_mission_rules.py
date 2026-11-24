@@ -46,8 +46,11 @@ DUMP_KEY_TO_CSHARP: dict[str, str] = {
     "timer": "TimerID",
 }
 
-# Fields whose values are enum names; keep as strings for the C# side to parse.
-ENUM_FIELDS = {"ModifyType"}
+# Enum legal values, from dump.cs:62746 (State_TimerAddTime.ModifyTypes).
+# Keep as strings for the C# side to parse with Enum.Parse.
+ENUM_VALUES: dict[str, list[str]] = {
+    "ModifyType": ["Add", "Set", "Subtract", "Reset"],
+}
 
 NODE_RE = re.compile(
     r"^\[(\d+)\]\s+Node(?:\s+name='(?P<name>.*?)')?(?P<params>.*?)"
@@ -234,7 +237,75 @@ def build_rules(base: Graph, new: Graph, evidence: list[str]) -> list[dict[str, 
     return rules
 
 
+def find_not_covered(
+    base: Graph, new: Graph, rules: list[dict[str, object]], evidence: list[str]
+) -> list[dict[str, object]]:
+    """List functional changes the scalar rule format cannot express.
+
+    Only report things a mission author would actually miss. Plain index
+    renumbering from plugin node insertion is not a functional gap, so it is
+    intentionally left out; see docs/mission-rules.md for the full boundary.
+
+    Sources:
+      * result.txt log lines naming a change with no matching rule
+      * target nodes with timer/spawn parameters at indices absent from base
+    """
+    base_by_index = {node.index: node for node in base.nodes}
+    new_by_index = {node.index: node for node in new.nodes}
+    result: list[dict[str, object]] = []
+
+    # Functional gaps stated in the plugin's own log. Each of these is a real
+    # behaviour change that the 8 scalar rules do not apply.
+    gap_patterns = [
+        # The +200s bonus is reported from the graph side below, with its index.
+        ("iron nest via CopyNode", "enemy iron nest entity insertion", "entity"),
+        ("removed TimerAdd(Set 500)", "Deletion of the base graph's Set(500) node", "graph"),
+        ("printer: intro=", "teleprinter priority/replacement configuration", "graph"),
+        ("win chain:", "win condition chain rewiring", "graph"),
+        ("mission wired:", "campaign progression wiring", "graph"),
+    ]
+    for needle, description, category in gap_patterns:
+        matches = [line.strip() for line in evidence if needle in line]
+        if matches:
+            result.append(
+                {
+                    "change": description,
+                    "category": category,
+                    "evidence": matches[:2],
+                    "reason": (
+                        "requires inserting/removing nodes or rewiring edges; "
+                        "the rule format only edits scalar fields on existing nodes"
+                    ),
+                }
+            )
+
+    # A target-only node carrying timer params is the same +200s gap seen from
+    # the graph side. Keep it as a cross-check with an explicit index.
+    for index in sorted(set(new_by_index) - set(base_by_index)):
+        node = new_by_index[index]
+        if "time" not in node.params and "mod" not in node.params:
+            continue
+        result.insert(
+            0,
+            {
+                "index": index,
+                "change": "second +200s add-time bonus (Target node, not State_TimerAddTime)",
+                "category": "timer",
+                "params": ", ".join(f"{k}={v}" for k, v in node.params.items()),
+                "reason": (
+                    "inserted node; the patch cannot create it, so this add-time "
+                    "step is MISSING after applying the JSON rules"
+                ),
+                "source_line": node.line_no,
+            },
+        )
+        break
+
+    return result
+
+
 def build_document(base: Graph, new: Graph, rules: list[dict[str, object]], evidence: list[str]) -> dict[str, object]:
+    not_covered = find_not_covered(base, new, rules, evidence)
     return {
         "mission": "ExtremeCounterBattery",
         "base_graph": base.mission_id,
@@ -243,10 +314,12 @@ def build_document(base: Graph, new: Graph, rules: list[dict[str, object]], evid
         "target_node_count": len(new.nodes),
         "note": (
             "index is the base graph's node index. Node type is verified at runtime. "
-            "Graph rewiring and node insertion are not expressible here; see docs/mission-rules.md."
+            "This is a PARTIAL patch: see not_covered for changes the rule format "
+            "cannot express. It is not a full replica of the target mission."
         ),
-        "enum_values": {"ModifyType": sorted(ENUM_FIELDS)},
+        "enum_values": ENUM_VALUES,
         "rules": rules,
+        "not_covered": not_covered,
         "build_log_evidence": evidence[:40],
     }
 

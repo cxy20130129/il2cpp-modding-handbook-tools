@@ -71,6 +71,33 @@ class BuildMissionRulesTests(unittest.TestCase):
             doc = json.loads(out.read_text(encoding="utf-8"))
             self.assertEqual(doc["mission"], "ExtremeCounterBattery")
             self.assertEqual(len(doc["rules"]), 8)
+            self.assertEqual(
+                doc["enum_values"]["ModifyType"],
+                ["Add", "Set", "Subtract", "Reset"],
+            )
+
+    def test_not_covered_declares_the_200s_gap(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "rules.json"
+            with contextlib.redirect_stdout(io.StringIO()):
+                b.main(["--dumps", str(DUMPS), "-o", str(out)])
+            doc = json.loads(out.read_text(encoding="utf-8"))
+            gaps = doc["not_covered"]
+            timer = [g for g in gaps if g.get("category") == "timer"]
+            self.assertTrue(timer)
+            self.assertEqual(timer[0]["index"], 60)
+            self.assertIn("MISSING", timer[0]["reason"])
+            self.assertTrue(any(g.get("category") == "entity" for g in gaps))
+            self.assertIn("PARTIAL", doc["note"])
+
+    def test_generation_is_byte_reproducible(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            first = Path(tmp) / "first.json"
+            second = Path(tmp) / "second.json"
+            with contextlib.redirect_stdout(io.StringIO()):
+                b.main(["--dumps", str(DUMPS), "-o", str(first)])
+                b.main(["--dumps", str(DUMPS), "-o", str(second)])
+            self.assertEqual(first.read_bytes(), second.read_bytes())
 
 
 if __name__ == "__main__":

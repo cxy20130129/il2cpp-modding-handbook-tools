@@ -71,7 +71,9 @@ dotnet build .\my-mod\BepInExMod.csproj -c Release `
 # 把 bin\Release\net6.0\IronNestBepInExTemplate.dll 放进 BepInEx\plugins
 ```
 
-**改任务数值/文案不用再逆向**：`scripts/build_mission_rules.py` 从三份任务 dump 生成 `missions/extreme-counter-battery.json`，模板里的 `Patch_MissionGraphBuild` 在任务加载后按 JSON 改节点字段。改电报、计时、刷兵数量只动 JSON。详见 `docs/mission-rules.md`。
+**改部分任务数值/文案不用再逆向**：`scripts/build_mission_rules.py` 从三份任务 dump 生成 `missions/extreme-counter-battery.json`，模板里的 `Patch_MissionGraphBuild` 在任务加载后按 JSON 改节点字段。改电报、初始计时、击毁加时、现有刷兵数量只动 JSON。
+
+**这不是完整复刻**：规则只改基础任务里已有节点的标量字段。第二组 +200 秒加时、敌方铁巢、胜利条件连线和任务时限都不在规则内——JSON 的 `not_covered` 段落逐条列出来了。要多改这些仍需要构建插件。详见 `docs/mission-rules.md`。
 
 Iron Nest 的实测结论见两份文档：
 
