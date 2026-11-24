@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+
+# Dump output — never commit game data
+dumps/
+dump.cs
+stringliteral.json
+script.json
+il2cpp.h
+DummyDll/
+*.dll
+*.so
+*.dat
+*.pak
+*.bundle
+
+# Local config
+local.settings.json
+.env

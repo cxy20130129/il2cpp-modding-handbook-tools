@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>MyMod</AssemblyName>
+    <RootNamespace>MyMod</RootNamespace>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <MelonLoaderDir Condition="'$(MelonLoaderDir)' == ''">$(MELONLOADER_DIR)</MelonLoaderDir>
+  </PropertyGroup>
+
+  <Target Name="CheckMelonLoaderDir" BeforeTargets="ResolveReferences">
+    <Error Condition="'$(MelonLoaderDir)' == ''"
+           Text="MelonLoaderDir is not set. Pass -p:MelonLoaderDir=&quot;C:\path\to\Game\MelonLoader&quot; or set MELONLOADER_DIR." />
+    <Error Condition="!Exists('$(MelonLoaderDir)\MelonLoader.dll')"
+           Text="MelonLoader.dll not found under $(MelonLoaderDir)." />
+  </Target>
+
+  <ItemGroup>
+    <Reference Include="MelonLoader">
+      <HintPath>$(MelonLoaderDir)\MelonLoader.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>
