@@ -20,7 +20,16 @@
 
 ## 快速开始
 
-前提：Windows、Python 3.10+、.NET SDK 6/8+、一份正版游戏、自己下载的 Il2CppDumper。
+前提：Windows、Python 3.10+、.NET SDK 8+、一份正版游戏。
+
+**Unity 6 / metadata v39 必须用 v39 fork**：官方 Il2CppDumper v6.7.46 只支持到 metadata v31，遇到 Unity 6000.x 会报 `not a supported version[39]`。本仓库已内置 `tools/Il2CppDumper-v39`（roytu/Il2CppDumper 的 `v39` 分支，已编译好 net8.0 版本），`dump.ps1` 会优先用它。重建命令：
+
+```powershell
+cd .\tools\Il2CppDumper-v39
+dotnet build Il2CppDumper/Il2CppDumper.csproj -c Release -f net8.0
+```
+
+记得把 `Il2CppDumper/config.json` 里的 `RequireAnyKey` 设为 `false`，否则非交互运行会卡在 "Press any key to exit..."。
 
 ```powershell
 # 1. 检查环境

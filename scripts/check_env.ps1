@@ -60,6 +60,7 @@ if ($git) {
 $dumperCandidates = @()
 if ($env:IL2CPP_DUMPER) { $dumperCandidates += $env:IL2CPP_DUMPER }
 $dumperCandidates += @(
+    ".\tools\Il2CppDumper-v39\Il2CppDumper\bin\Release\net8.0\Il2CppDumper.dll",
     ".\tools\Il2CppDumper\Il2CppDumper.exe",
     ".\tools\Il2CppDumper\Il2CppDumper.dll"
 )

@@ -45,6 +45,7 @@ if (-not $Dumper) {
     $candidates = @()
     if ($env:IL2CPP_DUMPER) { $candidates += $env:IL2CPP_DUMPER }
     $candidates += @(
+        ".\tools\Il2CppDumper-v39\Il2CppDumper\bin\Release\net8.0\Il2CppDumper.dll",
         ".\tools\Il2CppDumper\Il2CppDumper.exe",
         ".\tools\Il2CppDumper\Il2CppDumper.dll"
     )
@@ -56,16 +57,28 @@ if (-not $Dumper -or -not (Test-Path -LiteralPath $Dumper -PathType Leaf)) {
 }
 
 $dumperPath = (Resolve-Path -LiteralPath $Dumper).Path
+$dumperDir = Split-Path -Parent $dumperPath
+$ext = [System.IO.Path]::GetExtension($dumperPath)
+
+# Metadata v39 (Unity 6000.x) needs the v39 fork built for net8.0.
+# Roll forward so it also runs when only newer .NET runtimes are installed.
+$env:DOTNET_ROLL_FORWARD = "LatestMajor"
+
 Write-Host "GameAssembly : $gamePath"
 Write-Host "Metadata     : $metaPath"
 Write-Host "Output       : $outPath"
 Write-Host "Dumper       : $dumperPath"
 Write-Host ""
 
-if ([System.IO.Path]::GetExtension($dumperPath) -ieq ".dll") {
-    & dotnet $dumperPath $gamePath $metaPath $outPath
-} else {
-    & $dumperPath $gamePath $metaPath $outPath
+Push-Location $dumperDir
+try {
+    if ($ext -ieq ".dll") {
+        & dotnet $dumperPath $gamePath $metaPath $outPath
+    } else {
+        & $dumperPath $gamePath $metaPath $outPath
+    }
+} finally {
+    Pop-Location
 }
 
 if ($LASTEXITCODE -ne 0) {
