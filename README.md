@@ -13,11 +13,13 @@
 | `scripts/find_type.py`       | 在 `dump.cs` 里按类名、方法名、字段名搜索，带行号和 RVA                |
 | `scripts/find_string.py`     | 在 `stringliteral.json` 里搜字符串字面量，定位 UI 文案和电报文本      |
 | `scripts/disasm_method.py`   | 按 RVA 反汇编 native 方法，解析字符串引用                           |
+| `scripts/field_offsets.py`   | 提取类的字段偏移表，支持正则和 Markdown/JSON/CSV 输出             |
 | `templates/bepinex-mod/`     | BepInEx 6 IL2CPP 插件骨架，已用本机 Iron Nest 编译验证              |
 | `templates/melonloader-mod/` | 能直接 `dotnet build` 的 MelonLoader Mod 骨架            |
 | `docs/workflow.md`           | 从拿到游戏到验证 Hook 的完整流程                                |
 | `docs/toolchain.md`          | 工具链版本、常见报错、选型建议                                    |
 | `docs/hook-patterns.md`      | Harmony 补丁的几种常用写法与坑                                |
+| `docs/field-offsets.md`      | 字段偏移怎么读、增量/静态/常量的坑、偏移能做什么不能做什么        |
 | `docs/iron-nest-timer-and-tokens.md` | 反炮兵计时器与任务令牌的实测类表、偏移和 RVA             |
 | `docs/iron-nest-mission-graph.md` | 任务图节点语法、事件过滤器、极限反炮兵完整拆解（实测）      |
 | `examples/iron-nest/`        | Iron Nest 的具体搜索词和排查顺序                              |
@@ -56,7 +58,10 @@ python .\scripts\find_type.py .\dumps\iron-nest\dump.cs OnFire --kind method
 # 4. 找文案
 python .\scripts\find_string.py .\dumps\iron-nest\stringliteral.json "artillery"
 
-# 5. 建 Mod（Iron Nest 用 BepInEx 6，不是 MelonLoader）
+# 5. 看字段布局（直接生成可贴进文档的偏移表）
+python .\scripts\field_offsets.py .\dumps\iron-nest\dump.cs CounterBatteryTimer --format markdown
+
+# 6. 建 Mod（Iron Nest 用 BepInEx 6，不是 MelonLoader）
 copy .\templates\bepinex-mod .\my-mod -Recurse
 dotnet build .\my-mod\BepInExMod.csproj -c Release `
   -p:IronNestDir="D:\Games\Iron Nest Heavy Turret Simulator"

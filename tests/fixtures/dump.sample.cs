@@ -30,3 +30,18 @@ public sealed class Outer // TypeDefIndex: 2000
         public void Ping() { } // RVA: 0x1A2D000 Offset: 0x1A2D000 VA: 0x1A2D000
     }
 }
+
+// Namespace: IronNest.Gameplay
+public class LayoutProbe : MonoBehaviour // TypeDefIndex: 2200
+{
+    // Fields
+    public static LayoutProbe Instance; // 0x0
+    private byte flag; // 0x18
+    private int count; // 0x1C
+    public string label; // 0x20
+    public List<float> samples; // 0x28
+    internal readonly double weight; // 0x30
+    public const int MAX = 10; // 0x0
+    public UnityEngine.Object noOffset;
+    public int PageIndex { get; set; } // 0x38
+}
