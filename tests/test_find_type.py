@@ -34,6 +34,12 @@ class FindTypeTests(unittest.TestCase):
         self.assertEqual(matches[0].name, "remaining")
         self.assertEqual(matches[0].type_ctx.full_name, "IronNest.Gameplay.ArtilleryTimer")
 
+    def test_property_search(self) -> None:
+        matches = find_type.find_matches(FIXTURE, "CurrentPage", kind="property")
+        self.assertEqual(len(matches), 1)
+        self.assertEqual(matches[0].kind, "property")
+        self.assertEqual(matches[0].name, "CurrentPage")
+
     def test_regex_and_case(self) -> None:
         matches = find_type.find_matches(
             FIXTURE, r"^start.*", kind="method", use_regex=True, case_sensitive=False

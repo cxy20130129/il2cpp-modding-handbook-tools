@@ -10,6 +10,8 @@ public class TelegraphPanel : MonoBehaviour // TypeDefIndex: 1187
     // Methods
     public void SetText(string text) { } // RVA: 0x1A2B3C0 Offset: 0x1A2B3C0 VA: 0x1A2B3C0
     private void Update() { } // RVA: 0x1A2B400 Offset: 0x1A2B400 VA: 0x1A2B400
+
+    public int CurrentPage { get; set; } // 0x28
 }
 
 // Namespace: IronNest.Gameplay

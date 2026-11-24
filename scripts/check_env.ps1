@@ -23,7 +23,17 @@ function Add-Result {
 $python = Get-Command python -ErrorAction SilentlyContinue
 if ($python) {
     $version = ((& python --version) -join " ").Trim()
-    Add-Result "Python" $true $true $version
+    $pyOk = $false
+    if ($version -match "Python\s+(\d+)\.(\d+)") {
+        $major = [int]$matches[1]
+        $minor = [int]$matches[2]
+        $pyOk = ($major -gt 3) -or ($major -eq 3 -and $minor -ge 10)
+    }
+    if ($pyOk) {
+        Add-Result "Python" $true $true $version
+    } else {
+        Add-Result "Python" $false $true "$version (need 3.10+)"
+    }
 } else {
     Add-Result "Python" $false $true "install Python 3.10+ and add it to PATH"
 }

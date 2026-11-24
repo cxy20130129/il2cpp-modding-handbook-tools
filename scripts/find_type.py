@@ -100,10 +100,10 @@ def classify_member(line: str) -> str | None:
         return None
     if "// RVA:" in line and "(" in line:
         return "method"
-    if "// 0x" in line and ";" in line:
-        return "field"
     if re.search(r"\{\s*(?:get|set)", line):
         return "property"
+    if "// 0x" in line and ";" in line:
+        return "field"
     return None
 
 
