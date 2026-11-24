@@ -1,0 +1,198 @@
+{
+  "mission": "ExtremeCounterBattery",
+  "base_graph": "Artillery Introduction",
+  "target_graph": "ExtremeCounterBattery",
+  "base_node_count": 52,
+  "target_node_count": 61,
+  "note": "index is the base graph's node index. Node type is verified at runtime. Graph rewiring and node insertion are not expressible here; see docs/mission-rules.md.",
+  "enum_values": {
+    "ModifyType": [
+      "ModifyType"
+    ]
+  },
+  "rules": [
+    {
+      "index": 1,
+      "type": "State_SpawnMapEntity",
+      "set": {
+        "NumberToSpawn": "20"
+      },
+      "was": {
+        "NumberToSpawn": "4"
+      },
+      "evidence": [
+        "spawn[0] before: ID=EnemyInfantry role=Enemy, Infantry hp=1 arm=0 stars=0 num=4",
+        "spawn[1] before: ID=AllySpotter role=Spotter hp=1 arm=0 stars=0 num=1",
+        "spawn[2] before: ID=AllySpotter role=Spotter hp=1 arm=0 stars=0 num=1",
+        "spawn[3] before: ID=AllyGroup role=Ally hp=1 arm=0 stars=0 num=20",
+        "spawn[4] before: ID=EnemyArtillery role=Target, EnemyGroup1, Artillery hp=1 arm=0 stars=1 num=3",
+        "spawn[5] before: ID=EnemyArtillery role=Enemy, Target, Artillery hp=1 arm=0 stars=1 num=2"
+      ],
+      "source_line": 3
+    },
+    {
+      "index": 4,
+      "type": "State_SpawnMapEntity",
+      "set": {
+        "ID": "EnemyBunker",
+        "NumberToSpawn": "3"
+      },
+      "was": {
+        "ID": "AllyGroup",
+        "NumberToSpawn": "20"
+      },
+      "evidence": [
+        "spawn[0] before: ID=EnemyInfantry role=Enemy, Infantry hp=1 arm=0 stars=0 num=4",
+        "spawn[1] before: ID=AllySpotter role=Spotter hp=1 arm=0 stars=0 num=1",
+        "spawn[2] before: ID=AllySpotter role=Spotter hp=1 arm=0 stars=0 num=1",
+        "spawn[3] before: ID=AllyGroup role=Ally hp=1 arm=0 stars=0 num=20",
+        "spawn[4] before: ID=EnemyArtillery role=Target, EnemyGroup1, Artillery hp=1 arm=0 stars=1 num=3",
+        "spawn[5] before: ID=EnemyArtillery role=Enemy, Target, Artillery hp=1 arm=0 stars=1 num=2"
+      ],
+      "source_line": 6
+    },
+    {
+      "index": 5,
+      "type": "State_SpawnMapEntity",
+      "set": {
+        "NumberToSpawn": "8"
+      },
+      "was": {
+        "NumberToSpawn": "3"
+      },
+      "evidence": [
+        "spawn[0] before: ID=EnemyInfantry role=Enemy, Infantry hp=1 arm=0 stars=0 num=4",
+        "spawn[1] before: ID=AllySpotter role=Spotter hp=1 arm=0 stars=0 num=1",
+        "spawn[2] before: ID=AllySpotter role=Spotter hp=1 arm=0 stars=0 num=1",
+        "spawn[3] before: ID=AllyGroup role=Ally hp=1 arm=0 stars=0 num=20",
+        "spawn[4] before: ID=EnemyArtillery role=Target, EnemyGroup1, Artillery hp=1 arm=0 stars=1 num=3",
+        "spawn[5] before: ID=EnemyArtillery role=Enemy, Target, Artillery hp=1 arm=0 stars=1 num=2"
+      ],
+      "source_line": 7
+    },
+    {
+      "index": 6,
+      "type": "State_TeleprinterText",
+      "set": {
+        "Text.Key": ".\n. .\n. . .\n<i><b><smallcaps>最高统帅部</smallcaps>致<smallcaps>铁巢：</smallcaps></b></i>\n敌军部署大量兵力，试图重夺雷阿尔城。据情报，敌人还部署了少量火炮。\n至少摧毁所有敌方火炮和 5 支步兵。\n.\n<b>注意：</b>反炮兵将在第一发炮弹落地后开始计时。\n.\n<i><b><smallcaps>光荣归于卡斯蒂利亚! ! !</smallcaps></b></i>\n  - - -"
+      },
+      "was": {
+        "Text.Key": "STR_MISSION_ARTILLERY_1"
+      },
+      "evidence": [
+        "teleprinters=10 intro=True alert=True startTimer=True",
+        "intro replaced len=227",
+        "alert replaced len=146"
+      ],
+      "source_line": 8
+    },
+    {
+      "index": 8,
+      "type": "State_TeleprinterText",
+      "set": {
+        "Text.Key": ".\n<i><b><smallcaps>最高统帅部</smallcaps>致<smallcaps>铁巢：</smallcaps></b></i>\n情报有误，敌方火炮数量较多。\n.\n不对！敌方部署了铁巢！\n敌方铁巢正在测距！\n.\n<b>紧急转移！紧急转移！！紧急转移！！！</b>\n  - - -"
+      },
+      "was": {
+        "Text.Key": "STR_MISSION_ARTILLERY_2"
+      },
+      "evidence": [
+        "teleprinters=10 intro=True alert=True startTimer=True",
+        "intro replaced len=227",
+        "alert replaced len=146"
+      ],
+      "source_line": 10
+    },
+    {
+      "index": 11,
+      "type": "State_StartTimer",
+      "set": {
+        "InitalTime": "60"
+      },
+      "was": {
+        "InitalTime": "300"
+      },
+      "evidence": [
+        "StartTimer before=300",
+        "StartTimer -> 60",
+        "StartTimer before=60",
+        "StartTimer(60) rewired: alert -> wait(10s) -> StartTimer, in=1",
+        "shell landed -> UnpauseTimer (no second timer), StartTimer in=1",
+        "StartTimer=60"
+      ],
+      "source_line": 13
+    },
+    {
+      "index": 15,
+      "type": "State_TimerAddTime",
+      "set": {
+        "Time": "40"
+      },
+      "was": {
+        "Time": "100"
+      },
+      "evidence": [
+        "TimerAdd before: Time=100 modify=Add",
+        "TimerAdd(artillery) -> +40",
+        "TimerAdd before: Time=500 modify=Set",
+        "removed TimerAdd(Set 500)",
+        "TimerAdd Time=40 modify=Add",
+        "TimerAdd Time=200 modify=Add"
+      ],
+      "source_line": 17
+    },
+    {
+      "index": 32,
+      "type": "State_SpawnMapEntity",
+      "set": {
+        "ID": "EnemyFDC",
+        "NumberToSpawn": "2"
+      },
+      "was": {
+        "ID": "AllySpotter",
+        "NumberToSpawn": "1"
+      },
+      "evidence": [
+        "spawn[0] before: ID=EnemyInfantry role=Enemy, Infantry hp=1 arm=0 stars=0 num=4",
+        "spawn[1] before: ID=AllySpotter role=Spotter hp=1 arm=0 stars=0 num=1",
+        "spawn[2] before: ID=AllySpotter role=Spotter hp=1 arm=0 stars=0 num=1",
+        "spawn[3] before: ID=AllyGroup role=Ally hp=1 arm=0 stars=0 num=20",
+        "spawn[4] before: ID=EnemyArtillery role=Target, EnemyGroup1, Artillery hp=1 arm=0 stars=1 num=3",
+        "spawn[5] before: ID=EnemyArtillery role=Enemy, Target, Artillery hp=1 arm=0 stars=1 num=2"
+      ],
+      "source_line": 34
+    }
+  ],
+  "build_log_evidence": [
+    "spawn[0] before: ID=EnemyInfantry role=Enemy, Infantry hp=1 arm=0 stars=0 num=4",
+    "spawn[1] before: ID=AllySpotter role=Spotter hp=1 arm=0 stars=0 num=1",
+    "spawn[2] before: ID=AllySpotter role=Spotter hp=1 arm=0 stars=0 num=1",
+    "spawn[3] before: ID=AllyGroup role=Ally hp=1 arm=0 stars=0 num=20",
+    "spawn[4] before: ID=EnemyArtillery role=Target, EnemyGroup1, Artillery hp=1 arm=0 stars=1 num=3",
+    "spawn[5] before: ID=EnemyArtillery role=Enemy, Target, Artillery hp=1 arm=0 stars=1 num=2",
+    "spawn[6] before: ID=AllySpotter role=Spotter hp=1 arm=0 stars=0 num=1",
+    "spawn[7] before: ID=EnemyInfantry role=Enemy, Infantry hp=1 arm=0 stars=0 num=1",
+    "--- zones in graph ---",
+    "iron nest via CopyNode: ok",
+    "iron nest location -> Zone 'enemy'",
+    "iron nest graph ok=True",
+    "iron nest: role=Target, EnemyGroup3, Artillery hp=4 arm=1 stars=5 num=1 scale=0 presetIcon=False",
+    "StartTimer before=300",
+    "StartTimer -> 60",
+    "TimerAdd before: Time=100 modify=Add",
+    "TimerAdd(artillery) -> +40",
+    "TimerAdd before: Time=500 modify=Set",
+    "teleprinters=10 intro=True alert=True startTimer=True",
+    "intro replaced len=227",
+    "alert replaced len=146",
+    "StartTimer before=60",
+    "StartTimer(60) rewired: alert -> wait(10s) -> StartTimer, in=1",
+    "shell landed -> UnpauseTimer (no second timer), StartTimer in=1",
+    "win chain: (5 infantry | no artillery) -> cb1(artillery==0) -> cb2(infantry<=15) -> complete",
+    "removed TimerAdd(Set 500)",
+    "iron nest +200 wired",
+    "progression instance=True",
+    "StartTimer=60",
+    "TimerAdd Time=40 modify=Add",
+    "TimerAdd Time=200 modify=Add"
+  ]
+}

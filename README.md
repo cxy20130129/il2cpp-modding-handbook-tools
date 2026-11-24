@@ -14,12 +14,15 @@
 | `scripts/find_string.py`     | 在 `stringliteral.json` 里搜字符串字面量，定位 UI 文案和电报文本      |
 | `scripts/disasm_method.py`   | 按 RVA 反汇编 native 方法，解析字符串引用                           |
 | `scripts/field_offsets.py`   | 提取类的字段偏移表，支持正则和 Markdown/JSON/CSV 输出             |
+| `scripts/build_mission_rules.py` | 从三份任务 dump 生成可配置的字段补丁规则 JSON                 |
 | `templates/bepinex-mod/`     | BepInEx 6 IL2CPP 插件骨架，已用本机 Iron Nest 编译验证              |
 | `templates/melonloader-mod/` | 能直接 `dotnet build` 的 MelonLoader Mod 骨架            |
 | `docs/workflow.md`           | 从拿到游戏到验证 Hook 的完整流程                                |
 | `docs/toolchain.md`          | 工具链版本、常见报错、选型建议                                    |
 | `docs/hook-patterns.md`      | Harmony 补丁的几种常用写法与坑                                |
 | `docs/field-offsets.md`      | 字段偏移怎么读、增量/静态/常量的坑、偏移能做什么不能做什么        |
+| `docs/mission-rules.md`      | 任务补丁规则格式、字段映射、部署与验证清单                       |
+| `missions/extreme-counter-battery.json` | 极限反炮兵相对基础任务的 8 条字段差异（自动生成）        |
 | `docs/iron-nest-timer-and-tokens.md` | 反炮兵计时器与任务令牌的实测类表、偏移和 RVA             |
 | `docs/iron-nest-mission-graph.md` | 任务图节点语法、事件过滤器、极限反炮兵完整拆解（实测）      |
 | `examples/iron-nest/`        | Iron Nest 的具体搜索词和排查顺序                              |
@@ -67,6 +70,8 @@ dotnet build .\my-mod\BepInExMod.csproj -c Release `
   -p:IronNestDir="D:\Games\Iron Nest Heavy Turret Simulator"
 # 把 bin\Release\net6.0\IronNestBepInExTemplate.dll 放进 BepInEx\plugins
 ```
+
+**改任务数值/文案不用再逆向**：`scripts/build_mission_rules.py` 从三份任务 dump 生成 `missions/extreme-counter-battery.json`，模板里的 `Patch_MissionGraphBuild` 在任务加载后按 JSON 改节点字段。改电报、计时、刷兵数量只动 JSON。详见 `docs/mission-rules.md`。
 
 Iron Nest 的实测结论见两份文档：
 
