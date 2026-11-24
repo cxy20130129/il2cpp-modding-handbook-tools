@@ -24,6 +24,10 @@ DummyDll/
 *.pak
 *.bundle
 
+# Local tools and third-party downloads
+tools/
+*.zip
+
 # Local config
 local.settings.json
 .env

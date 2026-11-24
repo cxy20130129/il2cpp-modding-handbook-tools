@@ -64,6 +64,21 @@ $ext = [System.IO.Path]::GetExtension($dumperPath)
 # Roll forward so it also runs when only newer .NET runtimes are installed.
 $env:DOTNET_ROLL_FORWARD = "LatestMajor"
 
+# A fresh Il2CppDumper clone waits for a key press and hangs unattended runs.
+$configPath = Join-Path $dumperDir "config.json"
+if (Test-Path -LiteralPath $configPath -PathType Leaf) {
+    try {
+        $config = Get-Content -LiteralPath $configPath -Raw | ConvertFrom-Json
+        if ($config.PSObject.Properties["RequireAnyKey"] -and $config.RequireAnyKey) {
+            $config.RequireAnyKey = $false
+            $config | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $configPath -Encoding UTF8
+            Write-Host "Set RequireAnyKey=false in $configPath" -ForegroundColor Yellow
+        }
+    } catch {
+        Write-Warning "Could not update $configPath : $($_.Exception.Message)"
+    }
+}
+
 Write-Host "GameAssembly : $gamePath"
 Write-Host "Metadata     : $metaPath"
 Write-Host "Output       : $outPath"

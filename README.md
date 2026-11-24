@@ -25,12 +25,17 @@
 
 前提：Windows、Python 3.10+、.NET SDK 8+、一份正版游戏。
 
-**Unity 6 / metadata v39 必须用 v39 fork**：官方 Il2CppDumper v6.7.46 只支持到 metadata v31，遇到 Unity 6000.x 会报 `not a supported version[39]`。本仓库已内置 `tools/Il2CppDumper-v39`（roytu/Il2CppDumper 的 `v39` 分支，已编译好 net8.0 版本），`dump.ps1` 会优先用它。重建命令：
+**Unity 6 / metadata v39 必须用 v39 fork**：官方 Il2CppDumper v6.7.46 只支持到 metadata v31，遇到 Unity 6000.x 会报 `not a supported version[39]`。首次使用先准备 fork（第三方二进制不入库）：
 
 ```powershell
-cd .\tools\Il2CppDumper-v39
-dotnet build Il2CppDumper/Il2CppDumper.csproj -c Release -f net8.0
+mkdir tools
+git clone -b v39 --depth 1 https://github.com/roytu/Il2CppDumper.git tools\Il2CppDumper-v39
+cd tools\Il2CppDumper-v39
+dotnet build Il2CppDumper\Il2CppDumper.csproj -c Release -f net8.0
+cd ..\..
 ```
+
+`dump.ps1` 会优先找这个 v39 版本，并自动把它的 `RequireAnyKey` 改成 `false`，避免卡在按键提示。
 
 ```powershell
 # 1. 检查环境
