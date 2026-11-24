@@ -1,0 +1,53 @@
+graph id=Artillery Introduction nodes=52
+[00] Node name='State_Start' | out: 22 in: -
+[01] Node name='State_SpawnMapEntity' id='EnemyInfantry' num=4 | out: 2 in: 50
+[02] Node name='State_SpawnMapEntity' id='AllySpotter' num=1 | out: 3 in: 1
+[03] Node name='State_SpawnMapEntity' id='AllySpotter' num=1 | out: 32 in: 2
+[04] Node name='State_SpawnMapEntity' id='AllyGroup' num=20 | out: 5 in: 32
+[05] Node name='State_SpawnMapEntity' id='EnemyArtillery' num=3 | out: 51 in: 4
+[06] Node name='State_TeleprinterText' key='STR_MISSION_ARTILLERY_1' | out: 44 in: 51
+[07] Node name='State_WaitSeconds' | out: 8 in: 44
+[08] Node name='State_TeleprinterText' key='STR_MISSION_ARTILLERY_2' | out: - in: 7
+[09] Node name='Event_ShellLanded' | out: 11 in: -
+[10] Node name='State_TeleprinterText' key='STR_MISSION_ARTILLERY_3' | out: - in: 11
+[11] Node name='State_StartTimer' init=300 prefab=True | out: 10 in: 9
+[12] Node name='Event_EntityDestroyed' destroyed amount=1 lookup=All once=True filter[Role:Contains:Graph:'':role=Artillery;] | out: 28 in: -
+[13] Node name='State_TeleprinterText' key='STR_MISSION_ARTILLERY_5' | out: 40 in: 34
+[14] Node name='Event_EntityDestroyed' destroyed amount=1 lookup=Any once=False filter[Role:Contains:Graph:'':role=Artillery;] | out: 15 in: -
+[15] Node name='State_TimerAddTime' time=100 mod=Add | out: 16 in: 14
+[16] Node name='State_TeleprinterText' key='STR_MISSION_ARTILLERY_4' | out: - in: 15
+[17] Node name='State_TeleprinterText' key='STR_MISSION_ARTILLERY_10' | out: 18 in: 46
+[18] Node name='State_End' | out: - in: 17
+[19] Node name='State_SetTurretLocation' | out: 49 in: 23
+[20] Node name='State_StopTimer' | out: 47 in: 21
+[21] Node name='Event_EntityDestroyed' destroyed amount=1 lookup=All once=True filter[Role:Contains:Graph:'':role=Artillery;] | out: 20 in: 27
+[22] Node name='State_ClearTeleprinter' | out: 23 in: 0
+[23] Node name='State_ClearSignalAlarm' | out: 19 in: 22
+[24] Node name='State_TeleprinterText' key='STR_MISSION_ARTILLERY_6' | out: 27 in: 29
+[25] Node name='State_SpawnMapEntity' id='EnemyArtillery' num=2 | out: 29 in: 48
+[26] Node name='Event_EntityDestroyed' destroyed amount=2 lookup=Count once=True filter[Role:Contains:Graph:'':role=Infantry;] | out: 30 in: 40
+[27] Node name='State_TeleprinterText' key='STR_MISSION_ARTILLERY_7' | out: 21 in: 24
+[28] Node name='State_PauseTimer' | out: 34 in: 12
+[29] Node name='State_UnpauseTimer' | out: 24 in: 25
+[30] Node name='State_TimerAddTime' time=500 mod=Set | out: 48 in: 26
+[31] Node name='State_TeleprinterText' key='STR_MISSION_ARTILLERY_8' | out: - in: 47
+[32] Node name='State_SpawnMapEntity' id='AllySpotter' num=1 | out: 4 in: 3
+[33] Node name='State_SpawnMapEntity' id='EnemyInfantry' num=1 | out: - in: 42
+[34] Node name='State_WaitSeconds' | out: 13 in: 28
+[35] Node name='State_AddRequisitionPoints' | out: - in: 38
+[36] Node name='State_ConditionBranch' | out: 38 in: 37
+[37] Node name='Event_TimeInterval' | out: 36 in: -
+[38] Node name='State_TeleprinterText' key='STR_MISSION_ARTILLERY_9' | out: 35 in: 36
+[39] Node name='Event_EntityDestroyed' destroyed amount=1 lookup=All once=True filter[Role:Contains:Graph:'':role=Enemy;] | out: 46 in: 40
+[40] Node name='State_SplitBranch' | out: - in: 13
+[41] Node name='Event_EntityDestroyed' destroyed amount=1 lookup=Any once=False filter[Role:Contains:Graph:'':role=Infantry;] | out: 42 in: -
+[42] Node name='State_ConditionBranch' | out: 33 in: 41
+[43] Node name='State_SendSceneNotification' | out: - in: 45
+[44] Node name='State_SplitBranch' | out: - in: 6
+[45] Node name='State_WaitSeconds' | out: 43 in: 44
+[46] Node name='State_ClearSignalAlarm' | out: 17 in: 39
+[47] Node name='State_ClearSignalAlarm' | out: 31 in: 20
+[48] Node name='Event_EntityDestroyed' destroyed amount=1 lookup=Count once=True filter[Role:Contains:Graph:'':role=Infantry;] | out: 25 in: 30
+[49] Node name='State_SendSceneNotification' | out: 50 in: 19
+[50] Node name='State_GenericTimer' timer='MissionTime' sec=46000 | out: 1 in: 49
+[51] Node name='State_SendSceneNotification' | out: 6 in: 5

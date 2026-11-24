@@ -1,0 +1,80 @@
+graph id=ExtremeCounterBattery nodes=61
+[00] Node name='State_Start(Clone)' | out: 22 in: -
+[01] Node name='State_SpawnMapEntity(Clone)' id='EnemyInfantry' num=20 | out: 2 in: 49
+[02] Node name='State_SpawnMapEntity(Clone)' id='AllySpotter' num=1 | out: 3 in: 1
+[03] Node name='State_SpawnMapEntity(Clone)' id='AllySpotter' num=1 | out: 31 in: 2
+[04] Node name='State_SpawnMapEntity(Clone)' id='EnemyBunker' num=3 | out: 5 in: 31
+[05] Node name='State_SpawnMapEntity(Clone)' id='EnemyArtillery' num=8 | out: 32 in: 4
+[06] Node name='State_TeleprinterText(Clone)' key='.
+. .
+. . .
+<i><b><smallcaps>最高统帅部</smallcaps>致<smallcaps>铁巢：</smallcaps></b></i>
+敌军部署大量兵力，试图重夺雷阿尔城。据情报，敌人还部署了少量火炮。
+至少摧毁所有敌方火炮和 5 支步兵。
+.
+<b>注意：</b>反炮兵将在第一发炮弹落地后开始计时。
+.
+<i><b><smallcaps>光荣归于卡斯蒂利亚! ! !</smallcaps></b></i>
+  - - -' | out: 43 in: 50
+[07] Node name='State_WaitSeconds(Clone)' | out: 8 in: 43
+[08] Node name='State_TeleprinterText(Clone)' key='.
+<i><b><smallcaps>最高统帅部</smallcaps>致<smallcaps>铁巢：</smallcaps></b></i>
+情报有误，敌方火炮数量较多。
+.
+不对！敌方部署了铁巢！
+敌方铁巢正在测距！
+.
+<b>紧急转移！紧急转移！！紧急转移！！！</b>
+  - - -' | out: 52 in: 7
+[09] Node name='Event_ShellLanded(Clone)' | out: 53 in: -
+[10] Node name='State_TeleprinterText(Clone)' key='STR_MISSION_ARTILLERY_3' | out: - in: 11
+[11] Node name='State_StartTimer(Clone)' init=60 prefab=True | out: 10 in: 52
+[12] Node name='Event_EntityDestroyed(Clone)' destroyed amount=1 lookup=All once=True filter[Role:Contains:Graph:'':role=Artillery;] | out: 28 in: -
+[13] Node name='State_TeleprinterText(Clone)' key='STR_MISSION_ARTILLERY_5' | out: 39 in: 33
+[14] Node name='Event_EntityDestroyed(Clone)' destroyed amount=1 lookup=Any once=False filter[Role:Contains:Graph:'':role=Artillery;] | out: 15 in: -
+[15] Node name='State_TimerAddTime(Clone)' time=40 mod=Add | out: 16 in: 14
+[16] Node name='State_TeleprinterText(Clone)' key='STR_MISSION_ARTILLERY_4' | out: - in: 15
+[17] Node name='State_TeleprinterText(Clone)' key='STR_MISSION_ARTILLERY_10' | out: 18 in: 45
+[18] Node name='State_End(Clone)' | out: - in: 17
+[19] Node name='State_SetTurretLocation(Clone)' | out: 48 in: 23
+[20] Node name='State_StopTimer(Clone)' | out: 46 in: 21
+[21] Node name='Event_EntityDestroyed(Clone)' destroyed amount=1 lookup=All once=True filter[Role:Contains:Graph:'':role=Artillery;] | out: 20 in: 27
+[22] Node name='State_ClearTeleprinter(Clone)' | out: 23 in: 0
+[23] Node name='State_ClearSignalAlarm(Clone)' | out: 19 in: 22
+[24] Node name='State_TeleprinterText(Clone)' key='STR_MISSION_ARTILLERY_6' | out: 27 in: 29
+[25] Node name='State_SpawnMapEntity(Clone)' id='EnemyArtillery' num=2 | out: 29 in: 47
+[26] Node name='Event_EntityDestroyed(Clone)' destroyed amount=2 lookup=Count once=True filter[Role:Contains:Graph:'':role=Infantry;] | out: 47 in: 39
+[27] Node name='State_TeleprinterText(Clone)' key='STR_MISSION_ARTILLERY_7' | out: 21 in: 24
+[28] Node name='State_PauseTimer(Clone)' | out: 33 in: 12
+[29] Node name='State_UnpauseTimer(Clone)' | out: 24 in: 25
+[30] Node name='State_TeleprinterText(Clone)' key='STR_MISSION_ARTILLERY_8' | out: - in: 46
+[31] Node name='State_SpawnMapEntity(Clone)' id='AllySpotter' num=1 | out: 4 in: 3
+[32] Node name='State_SpawnMapEntity(Clone)' id='EnemyFDC' num=2 | out: 51 in: 5
+[33] Node name='State_WaitSeconds(Clone)' | out: 13 in: 28
+[34] Node name='State_AddRequisitionPoints(Clone)' | out: - in: 37
+[35] Node name='State_ConditionBranch(Clone)' | out: 37 in: 36
+[36] Node name='Event_TimeInterval(Clone)' | out: 35 in: -
+[37] Node name='State_TeleprinterText(Clone)' key='STR_MISSION_ARTILLERY_9' | out: 34 in: 35
+[38] Node name='Event_EntityDestroyed(Clone)' destroyed amount=5 lookup=Count once=True filter[Role:Contains:Graph:'':role=Infantry;] | out: 57 in: -
+[39] Node name='State_SplitBranch(Clone)' | out: - in: 13
+[40] Node name='Event_EntityDestroyed(Clone)' destroyed amount=1 lookup=Any once=True filter[Role:Contains:Graph:'':role=Infantry;] | out: 41 in: -
+[41] Node name='State_ConditionBranch(Clone)' | out: - in: 40
+[42] Node name='State_SendSceneNotification(Clone)' | out: - in: 44
+[43] Node name='State_SplitBranch(Clone)' | out: - in: 6
+[44] Node name='State_WaitSeconds(Clone)' | out: 42 in: 43
+[45] Node name='State_ClearSignalAlarm(Clone)' | out: 17 in: 58
+[46] Node name='State_ClearSignalAlarm(Clone)' | out: 30 in: 20
+[47] Node name='Event_EntityDestroyed(Clone)' destroyed amount=1 lookup=Count once=True filter[Role:Contains:Graph:'':role=Infantry;] | out: 25 in: 26
+[48] Node name='State_SendSceneNotification(Clone)' | out: 49 in: 19
+[49] Node name='State_GenericTimer(Clone)' timer='MissionTime' sec=46000 | out: 1 in: 48
+[50] Node name='State_SendSceneNotification(Clone)' | out: 6 in: 51
+[51] Node name='State_SpawnMapEntity(Clone)' id='EnemyIronNest' num=1 | out: 50 in: 32
+[52] Node | out: 11 in: 8
+[53] Node | out: - in: 9
+[54] Node destroyed amount=1 lookup=Count once=True filter[Role:Contains:Graph:'':role=EnemyGroup1;Role:NotContains:Graph:'':role=Artillery;] | out: 55 in: -
+[55] Node name='FDC_PAUSE' | out: - in: 54
+[56] Node destroyed amount=1 lookup=All once=True filter[Role:Contains:Graph:'':role=Artillery;] | out: 57 in: -
+[57] Node | out: 58 in: 38 56
+[58] Node | out: 45 in: 57
+[59] Node destroyed amount=1 lookup=Count once=True filter[Role:Contains:Graph:'':role=EnemyGroup3;] | out: 60 in: -
+[60] Node time=200 mod=Add | out: - in: 59

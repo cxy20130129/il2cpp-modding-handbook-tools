@@ -19,7 +19,9 @@
 | `docs/toolchain.md`          | 工具链版本、常见报错、选型建议                                    |
 | `docs/hook-patterns.md`      | Harmony 补丁的几种常用写法与坑                                |
 | `docs/iron-nest-timer-and-tokens.md` | 反炮兵计时器与任务令牌的实测类表、偏移和 RVA             |
+| `docs/iron-nest-mission-graph.md` | 任务图节点语法、事件过滤器、极限反炮兵完整拆解（实测）      |
 | `examples/iron-nest/`        | Iron Nest 的具体搜索词和排查顺序                              |
+| `examples/iron-nest/mission-dumps/` | 极限反炮兵任务图/实体/构建日志的实测 dump 原文            |
 
 ## 快速开始
 
@@ -61,7 +63,12 @@ dotnet build .\my-mod\BepInExMod.csproj -c Release `
 # 把 bin\Release\net6.0\IronNestBepInExTemplate.dll 放进 BepInEx\plugins
 ```
 
-Iron Nest 的实测结论见 `docs/iron-nest-timer-and-tokens.md`。其它游戏如果用的是 MelonLoader，仍可用 `templates/melonloader-mod/`。
+Iron Nest 的实测结论见两份文档：
+
+- `docs/iron-nest-timer-and-tokens.md`：计时器字段偏移、RVA、任务令牌处理器。
+- `docs/iron-nest-mission-graph.md`：**想改任务内容从这里入手**。节点语法、电报富文本格式、歼灭事件过滤器、极限反炮兵的完整节点链，附实测 dump 原文。这份数据由插件构建任务时打印，不用进游戏、不用视觉自动化。
+
+其它游戏如果用的是 MelonLoader，仍可用 `templates/melonloader-mod/`。
 
 ## 输出示例
 

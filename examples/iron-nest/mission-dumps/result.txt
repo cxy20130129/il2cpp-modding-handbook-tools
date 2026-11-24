@@ -1,0 +1,116 @@
+=== Extreme Counter Battery build @ 2026/11/24 23:14:43 ===
+base mission nodes=52
+structure -> structure_base.txt
+deep copy check: src0=1DEC769E1C0 copy0=1DEC930B840
+  donors: fdc=True bunker=True
+    fdc role=Target, EnemyGroup1 hp=1 arm=1 stars=3 scale=1 presetIcon=True icon=MapEntityIcon_Enemy_Fire_Direction_Center iconRaw=null
+    bunker role=Enemy, Fortification hp=1 arm=1 stars=3 scale=1 presetIcon=True icon=MapEntityIcon_Enemy_Ammunition_Cache iconRaw=null
+  spawn[0] before: ID=EnemyInfantry role=Enemy, Infantry hp=1 arm=0 stars=0 num=4
+    -> 步兵 x20 hp1 arm0
+  spawn[1] before: ID=AllySpotter role=Spotter hp=1 arm=0 stars=0 num=1
+  spawn[2] before: ID=AllySpotter role=Spotter hp=1 arm=0 stars=0 num=1
+  spawn[3] before: ID=AllyGroup role=Ally hp=1 arm=0 stars=0 num=20
+    -> 补给仓库 x3 hp1 arm1 3星（区域改为 enemy，外观取自 FinalHarvest）
+  spawn[4] before: ID=EnemyArtillery role=Target, EnemyGroup1, Artillery hp=1 arm=0 stars=1 num=3
+    -> 敌方炮兵 x8 hp1 arm0 2星
+  spawn[5] before: ID=EnemyArtillery role=Enemy, Target, Artillery hp=1 arm=0 stars=1 num=2
+    -> 敌方炮兵 x2 hp1 arm0 2星
+  spawn[6] before: ID=AllySpotter role=Spotter hp=1 arm=0 stars=0 num=1
+  spawn[7] before: ID=EnemyInfantry role=Enemy, Infantry hp=1 arm=0 stars=0 num=1
+    -> 炮兵指挥中心 x2 hp1 arm1 3星（外观取自 FinalHarvest）
+spawn slots processed=8 artillery groups=2
+  FDC moved into main chain: anchor(Node) -> FDC -> notif
+  infantry-kill reinforcement event -> OnlyOnce
+--- zones in graph ---
+  zone 'spotter1' name=spotter1 role=Spotter shape=Single w=77 h=13 regions=0
+  zone 'spotter2' name=spotter2 role=Spotter shape=Composite w=18 h=22 regions=2
+  zone 'ally' name=ally role=Ally shape=Composite w=10 h=10 regions=3
+  zone 'enemy' name=enemy role=Enemy shape=Composite w=10 h=10 regions=3
+  zone 'Turret' name=Turret role=None shape=Single w=1 h=1 regions=0
+  zone 'spotter3' name=spotter3 role=None shape=Single w=22 h=8 regions=0
+--- spawn locations ---
+  EnemyInfantry x20 locType=Zone zone='enemy' rel=Self fuzzy=True randSub=False scale=1 presetIcon=True
+  AllySpotter x1 locType=Zone zone='spotter1' rel=Self fuzzy=False randSub=False scale=1 presetIcon=True
+  AllySpotter x1 locType=Zone zone='spotter2' rel=Self fuzzy=False randSub=False scale=1 presetIcon=True
+  EnemyBunker x3 locType=Zone zone='enemy' rel=Self fuzzy=True randSub=False scale=1 presetIcon=True
+  EnemyArtillery x8 locType=Zone zone='enemy' rel=Self fuzzy=True randSub=False scale=1 presetIcon=True
+  EnemyArtillery x2 locType=Relative zone='enemy' rel=ContextEntity fuzzy=True randSub=False scale=1 presetIcon=True
+  AllySpotter x1 locType=Zone zone='spotter3' rel=Self fuzzy=False randSub=False scale=1 presetIcon=True
+  EnemyFDC x2 locType=Zone zone='enemy' rel=Self fuzzy=True randSub=False scale=1 presetIcon=True
+  iron nest via CopyNode: ok
+  iron nest location -> Zone 'enemy'
+  iron nest graph ok=True
+  iron nest: role=Target, EnemyGroup3, Artillery hp=4 arm=1 stars=5 num=1 scale=0 presetIcon=False
+  wired: last->nest->next
+  StartTimer before=300
+  StartTimer -> 60
+  TimerAdd before: Time=100 modify=Add
+  TimerAdd(artillery) -> +40
+  TimerAdd before: Time=500 modify=Set
+teleprinters=10 intro=True alert=True startTimer=True
+  intro replaced len=227
+  alert replaced len=146
+  printer: intro=Primary alert(before)=Secondary queue=False waitComplete=False
+  printer: alert(after)=Primary
+  StartTimer before=60
+  StartTimer(60) rewired: alert -> wait(10s) -> StartTimer, in=1
+  shell landed -> UnpauseTimer (no second timer), StartTimer in=1
+  any FDC destroyed -> PauseTimer(FDC_PAUSE) wired
+  win trigger A: 5 infantry (enabled from start)
+  win trigger B: no artillery left
+  win chain: (5 infantry | no artillery) -> cb1(artillery==0) -> cb2(infantry<=15) -> complete
+  removed TimerAdd(Set 500)
+  2 infantry kills -> enable next wave (timer untouched)
+  iron nest +200 wired
+  mission ports: baseOut(Unlocks)=True newIn(UnlockedBy)=True
+  mission wired: base.Unlocks -> new.UnlockedBy, in=1
+  new node out(Unlocks)=True base.Unlocks now=3
+progression instance=True
+operation state=entries=18
+campaign missions=18
+--- campaign map nodes ---
+  Hospital False Flag pos=-376,24
+  ceremony and HCHE pos=104,24
+  Insurrections and Requisitions pos=552,24
+  ChallangeFDC pos=1512,-152
+  Artillery Introduction pos=1032,24
+  Chill pos=1032,200
+  IronRoad pos=1512,24
+  SiegeOfCartagena pos=1960,24
+  The Gorge pos=2408,24
+  RockofGibraltar pos=2856,24
+  DeadReckoning pos=3304,24
+  FireOnCall pos=3768,24
+  HighTide pos=4232,24
+  BlindFire pos=4696,24
+  PhantomBattery pos=5144,24
+  FinalHarvest pos=5592,24
+  WhiteShells pos=6040,24
+  ExtremeCounterBattery pos=1452,324
+structure -> structure_new.txt
+--- AFTER spawn list ---
+  EnemyInfantry [敌方步兵] role=Enemy, Infantry hp=1 arm=0 stars=0 num=20
+  AllySpotter [观测员] role=Spotter hp=1 arm=0 stars=0 num=1
+  AllySpotter [观测员] role=Spotter hp=1 arm=0 stars=0 num=1
+  EnemyBunker [补给仓库] role=Enemy, Fortification hp=1 arm=1 stars=3 num=3
+  EnemyArtillery [敌方炮兵] role=Target, EnemyGroup1, Artillery hp=1 arm=0 stars=2 num=8
+  EnemyArtillery [敌方炮兵] role=Enemy, Target, Artillery hp=1 arm=0 stars=2 num=2
+  AllySpotter [观测员] role=Spotter hp=1 arm=0 stars=0 num=1
+  EnemyFDC [炮兵指挥中心] role=Target, EnemyGroup1 hp=1 arm=1 stars=3 num=2
+  EnemyIronNest [敌方铁巢] role=Target, EnemyGroup3, Artillery hp=4 arm=1 stars=5 num=1
+--- timers ---
+  StartTimer=60
+  EventDestroyed amount=1 lookup=All onlyOnce=True
+  EventDestroyed amount=1 lookup=Any onlyOnce=False
+  TimerAdd Time=40 modify=Add
+  EventDestroyed amount=1 lookup=All onlyOnce=True
+  EventDestroyed amount=2 lookup=Count onlyOnce=True
+  EventDestroyed amount=5 lookup=Count onlyOnce=True
+  EventDestroyed amount=1 lookup=Any onlyOnce=True
+  EventDestroyed amount=1 lookup=Count onlyOnce=True
+  EventDestroyed amount=1 lookup=Count onlyOnce=True
+  EventDestroyed amount=1 lookup=All onlyOnce=True
+  EventDestroyed amount=1 lookup=Count onlyOnce=True
+  TimerAdd Time=200 modify=Add
+--- totals ---
+  炮兵=10 步兵=20 补给=3 FDC=2 铁巢=1

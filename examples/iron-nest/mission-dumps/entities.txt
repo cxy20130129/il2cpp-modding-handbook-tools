@@ -1,0 +1,45 @@
+=== FireMission.Entities @20:50:53  total=37 ===
+  allyspotter#1 x1
+  allyspotter#2 x1
+  allyspotter#3 x1
+  enemyartillery#1 x1
+  enemyartillery#2 x1
+  enemyartillery#3 x1
+  enemyartillery#4 x1
+  enemyartillery#5 x1
+  enemyartillery#6 x1
+  enemyartillery#7 x1
+  enemyartillery#8 x1
+  enemybunker#1 x1
+  enemybunker#2 x1
+  enemybunker#3 x1
+  enemyfdc#1 x1
+  enemyfdc#2 x1
+  enemyinfantry#1 x1
+  enemyinfantry#10 x1
+  enemyinfantry#11 x1
+  enemyinfantry#12 x1
+  enemyinfantry#13 x1
+  enemyinfantry#14 x1
+  enemyinfantry#15 x1
+  enemyinfantry#16 x1
+  enemyinfantry#17 x1
+  enemyinfantry#18 x1
+  enemyinfantry#19 x1
+  enemyinfantry#2 x1
+  enemyinfantry#20 x1
+  enemyinfantry#3 x1
+  enemyinfantry#4 x1
+  enemyinfantry#5 x1
+  enemyinfantry#6 x1
+  enemyinfantry#7 x1
+  enemyinfantry#8 x1
+  enemyinfantry#9 x1
+  enemyironnest#1 x1
+--- 关注实体 ---
+  [enemybunker#1] role=Enemy, Fortification hp=0/1 arm=1 stars=3 scale=1 pos=16,5 state=Destroyed, Damaged
+  [enemybunker#2] role=Enemy, Fortification hp=0/1 arm=1 stars=3 scale=1 pos=15,5 state=Destroyed, Damaged
+  [enemybunker#3] role=Enemy, Fortification hp=0/1 arm=1 stars=3 scale=1 pos=17,6 state=Destroyed, Damaged
+  [enemyfdc#1] role=Target, EnemyGroup1 hp=1/1 arm=1 stars=3 scale=1 pos=18,3 state=None
+  [enemyfdc#2] role=Target, EnemyGroup1 hp=0/1 arm=1 stars=3 scale=1 pos=16,5 state=Destroyed, Damaged
+  [enemyironnest#1] role=Target, EnemyGroup3, Artillery hp=3/4 arm=1 stars=5 scale=0 pos=17,3 state=Damaged

@@ -61,6 +61,17 @@ SleepyNodes.State_TimerAddTime   dump.cs:62760
 
 完整字段/RVA 表见 `docs/iron-nest-timer-and-tokens.md`。加载器是 BepInEx 6，模板在 `templates/bepinex-mod/`。
 
+### 改任务内容：直接看 dump，不要逆向字符串
+
+`mission-dumps/` 里有「极限反炮兵」的完整任务图 dump（插件构建时打印的明文）：
+
+- `structure_new.txt`：61 个节点，含参数、连接关系、中文电报原文。
+- `structure_base.txt`：基础任务「炮兵入门」52 节点，用来对照改了什么。
+- `result.txt`：插件逐行修改记录（300→60 秒、+100→+40 秒、刷兵替换等）。
+- `entities.txt`：构建后 37 个实体清单。
+
+节点语法、过滤器写法、完整机制链拆解见 `docs/iron-nest-mission-graph.md`。**这条路不依赖进游戏、不依赖 GPU/内存、不需要视觉自动化**——低配机器上比开游戏跑日志快得多。
+
 ## 4. 自定义任务的最小闭环
 
 按这个顺序做，每步都能单独验证：
