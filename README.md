@@ -6,17 +6,20 @@
 
 ## 这里有什么
 
-| 路径 | 用途 |
-|---|---|
-| `scripts/check_env.ps1` | 检查 Python / .NET / Il2CppDumper / MelonLoader 是否就位 |
-| `scripts/dump.ps1` | 调 Il2CppDumper，校验输入输出，失败就停 |
-| `scripts/find_type.py` | 在 `dump.cs` 里按类名、方法名、字段名搜索，带行号和 RVA |
-| `scripts/find_string.py` | 在 `stringliteral.json` 里搜字符串字面量，定位 UI 文案和电报文本 |
-| `templates/melonloader-mod/` | 能直接 `dotnet build` 的 MelonLoader Mod 骨架 |
-| `docs/workflow.md` | 从拿到游戏到验证 Hook 的完整流程 |
-| `docs/toolchain.md` | 工具链版本、常见报错、选型建议 |
-| `docs/hook-patterns.md` | Harmony 补丁的几种常用写法与坑 |
-| `examples/iron-nest/` | Iron Nest 的具体搜索词和排查顺序 |
+| 路径                           | 用途                                                 |
+| ---------------------------- | -------------------------------------------------- |
+| `scripts/check_env.ps1`      | 检查 Python / .NET / Il2CppDumper / BepInEx / MelonLoader 是否就位 |
+| `scripts/dump.ps1`           | 调 Il2CppDumper，校验输入输出，失败就停                         |
+| `scripts/find_type.py`       | 在 `dump.cs` 里按类名、方法名、字段名搜索，带行号和 RVA                |
+| `scripts/find_string.py`     | 在 `stringliteral.json` 里搜字符串字面量，定位 UI 文案和电报文本      |
+| `scripts/disasm_method.py`   | 按 RVA 反汇编 native 方法，解析字符串引用                           |
+| `templates/bepinex-mod/`     | BepInEx 6 IL2CPP 插件骨架，已用本机 Iron Nest 编译验证              |
+| `templates/melonloader-mod/` | 能直接 `dotnet build` 的 MelonLoader Mod 骨架            |
+| `docs/workflow.md`           | 从拿到游戏到验证 Hook 的完整流程                                |
+| `docs/toolchain.md`          | 工具链版本、常见报错、选型建议                                    |
+| `docs/hook-patterns.md`      | Harmony 补丁的几种常用写法与坑                                |
+| `docs/iron-nest-timer-and-tokens.md` | 反炮兵计时器与任务令牌的实测类表、偏移和 RVA             |
+| `examples/iron-nest/`        | Iron Nest 的具体搜索词和排查顺序                              |
 
 ## 快速开始
 
@@ -28,8 +31,6 @@
 cd .\tools\Il2CppDumper-v39
 dotnet build Il2CppDumper/Il2CppDumper.csproj -c Release -f net8.0
 ```
-
-记得把 `Il2CppDumper/config.json` 里的 `RequireAnyKey` 设为 `false`，否则非交互运行会卡在 "Press any key to exit..."。
 
 ```powershell
 # 1. 检查环境
@@ -48,11 +49,14 @@ python .\scripts\find_type.py .\dumps\iron-nest\dump.cs OnFire --kind method
 # 4. 找文案
 python .\scripts\find_string.py .\dumps\iron-nest\stringliteral.json "artillery"
 
-# 5. 建 Mod
-copy .\templates\melonloader-mod .\my-mod -Recurse
-# 改 MyMod.csproj 里的 MelonLoaderDir，然后：
-dotnet build .\my-mod\MyMod.csproj -c Release
+# 5. 建 Mod（Iron Nest 用 BepInEx 6，不是 MelonLoader）
+copy .\templates\bepinex-mod .\my-mod -Recurse
+dotnet build .\my-mod\BepInExMod.csproj -c Release `
+  -p:IronNestDir="D:\Games\Iron Nest Heavy Turret Simulator"
+# 把 bin\Release\net6.0\IronNestBepInExTemplate.dll 放进 BepInEx\plugins
 ```
+
+Iron Nest 的实测结论见 `docs/iron-nest-timer-and-tokens.md`。其它游戏如果用的是 MelonLoader，仍可用 `templates/melonloader-mod/`。
 
 ## 输出示例
 
@@ -74,7 +78,7 @@ IronNest.UI.TelegraphPanel  (dump.cs:18422)
 
 ## 状态
 
-早期版本。Python 脚本在合成 `dump.cs` 样本上通过单元测试；PowerShell 脚本只做了静态校验，未在真实游戏上跑通全流程。第一次用请按 `docs/workflow.md` 逐步验证。
+早期版本。Python 脚本在合成 `dump.cs` 样本上通过单元测试；v39 dumper 已在真实 Iron Nest 上跑出 `dump.cs`；BepInEx 模板已对真实游戏的 interop 程序集编译通过（0 警告 0 错误）。`dump.ps1` 的封装路径尚未从头复跑，第一次用请按 `docs/workflow.md` 逐步验证。
 
 ## 许可证
 

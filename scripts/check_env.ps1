@@ -71,13 +71,22 @@ if ($dumper) {
     Add-Result "Il2CppDumper" $false $true "download a release, put it in .\tools\Il2CppDumper, or set IL2CPP_DUMPER"
 }
 
-# MelonLoader (optional at check time, required to build the mod template)
+# MelonLoader (optional; only needed for templates/melonloader-mod)
 $melonDir = $env:MELONLOADER_DIR
 if (-not $melonDir) { $melonDir = ".\tools\MelonLoader" }
 if (Test-Path -LiteralPath (Join-Path $melonDir "MelonLoader.dll")) {
     Add-Result "MelonLoader" $true $false (Resolve-Path -LiteralPath $melonDir).Path
 } else {
     Add-Result "MelonLoader" $false $false "set MELONLOADER_DIR to the MelonLoader folder inside your game"
+}
+
+# BepInEx 6 (optional; Iron Nest uses this instead of MelonLoader)
+$bepDir = $env:BEPINEX_DIR
+if (-not $bepDir -and $env:IRON_NEST_DIR) { $bepDir = Join-Path $env:IRON_NEST_DIR "BepInEx" }
+if ($bepDir -and (Test-Path -LiteralPath (Join-Path $bepDir "core\BepInEx.Core.dll")) -and (Test-Path -LiteralPath (Join-Path $bepDir "interop\Assembly-CSharp.dll"))) {
+    Add-Result "BepInEx 6" $true $false (Resolve-Path -LiteralPath $bepDir).Path
+} else {
+    Add-Result "BepInEx 6" $false $false "set BEPINEX_DIR (or IRON_NEST_DIR) and launch the game once to generate interop assemblies"
 }
 
 # 7-Zip (optional)

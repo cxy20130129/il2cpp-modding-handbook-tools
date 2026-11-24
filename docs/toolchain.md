@@ -1,5 +1,7 @@
 # 工具链
 
+> Iron Nest 本机环境：Unity 6000.3.21f1 / metadata v39 / BepInEx 6.0.0-be.785。官方 Il2CppDumper 不支持 v39，用仓库内置的 `tools/Il2CppDumper-v39`；Mod 用 `templates/bepinex-mod/`。
+
 ## 核心工具
 
 | 工具 | 作用 | 备注 |

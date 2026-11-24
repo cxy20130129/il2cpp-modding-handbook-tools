@@ -2,7 +2,7 @@
 
 针对 Iron Nest: Heavy Turret Simulator（Unity 6 / IL2CPP）的搜索顺序和排查思路。
 
-**下面的类型名是占位符，不是已验证的游戏符号。** 先用 `find_type.py` 搜到真实名字，再替换。
+本机已完成一次真实 dump（Unity 6000.3.21f1 / metadata v39）。已验证的类型、字段偏移、RVA 和令牌处理器清单见 `docs/iron-nest-timer-and-tokens.md`；下面的搜索词是复现步骤，不是占位符。
 
 ## 1. 定位游戏文件
 
@@ -46,6 +46,20 @@ python .\scripts\find_string.py .\dumps\iron-nest\stringliteral.json "counter-ba
 ```
 
 搜索词建议：`Telegraph`、`Teletype`、`Radio`、`Message`、`Artillery`、`Counter`、`Mission`、`Objective`、`Timer`、`Countdown`、`Fire`、`Shell`。
+
+### 已验证命中（2026-11-24）
+
+```text
+CounterBatteryTimer        dump.cs:11386  TypeDefIndex 217
+FireMission                dump.cs:36430
+FireMissionTokenProcessor  dump.cs:36800  TypeDefIndex 679
+FireMissionCardPrinter     dump.cs:7772
+ArtilleryComputer          dump.cs:7265
+SleepyNodes.State_StartTimer     dump.cs:62703
+SleepyNodes.State_TimerAddTime   dump.cs:62760
+```
+
+完整字段/RVA 表见 `docs/iron-nest-timer-and-tokens.md`。加载器是 BepInEx 6，模板在 `templates/bepinex-mod/`。
 
 ## 4. 自定义任务的最小闭环
 

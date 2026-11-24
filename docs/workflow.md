@@ -2,6 +2,8 @@
 
 这份流程假设你有一份正版单机 Unity IL2CPP 游戏，并且只在自己机器上做模组开发。
 
+> Iron Nest Heavy Turret Simulator 实测用的是 **BepInEx 6.0.0-be.785**，不是 MelonLoader。下面第 3 节是通用选型；搞 Iron Nest 直接看 `iron-nest-timer-and-tokens.md` 和 `templates/bepinex-mod/`。
+
 ## 1. 确认是 IL2CPP
 
 游戏目录里应该同时存在：
