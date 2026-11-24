@@ -15,7 +15,7 @@ from pathlib import Path
 
 
 def load_strings(path: Path) -> list[dict[str, str]]:
-    with path.open("r", encoding="utf-8-sig") as handle:
+    with path.open("r", encoding="utf-8-sig", errors="replace") as handle:
         data = json.load(handle)
 
     if isinstance(data, dict):

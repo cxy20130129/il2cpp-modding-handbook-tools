@@ -2,7 +2,7 @@
 
 这份流程假设你有一份正版单机 Unity IL2CPP 游戏，并且只在自己机器上做模组开发。
 
-> Iron Nest Heavy Turret Simulator 实测用的是 **BepInEx 6.0.0-be.785**，不是 MelonLoader。下面第 3 节是通用选型；搞 Iron Nest 直接看 `iron-nest-timer-and-tokens.md` 和 `templates/bepinex-mod/`。
+> Iron Nest Heavy Turret Simulator 实测用的是 **BepInEx 6.0.0-be.785**。本仓库的流程和模板以 BepInEx 为准；`templates/melonloader-mod/` 只是给其它 Unity 版本的备用骨架，Iron Nest 不要用。直面游戏结论看 `iron-nest-timer-and-tokens.md`。
 
 ## 1. 确认是 IL2CPP
 
@@ -25,10 +25,10 @@
 
 | Loader | 适合 | 注意 |
 |---|---|---|
-| MelonLoader | 快速迭代、日志清晰、Mod 生态简单 | 对 Unity 版本敏感，先看 release notes 是否支持你的 Unity |
-| BepInEx 6 (IL2CPP) | 需要更底层的预加载器、插件链 | 配置项更多，IL2CPP 版本仍在 bleeding edge |
+| BepInEx 6 (IL2CPP) | 本仓库默认，Iron Nest 实测可用 | IL2CPP 支持在 6.x，用 `BepInEx.Unity.IL2CPP.BasePlugin` |
+| MelonLoader | 其它 Unity 版本的备用方案 | 对 Unity 版本敏感；本仓库只有空模板，不针对具体游戏验证过 |
 
-**只选一个。** 两个同时装会互相抢 `version.dll` / `winhttp.dll`，排查起来是灾难。
+**只选一个。** 两个同时装会互相抢 `version.dll` / `winhttp.dll`，排查起来是灾难。下面的第 5–8 节按 BepInEx 写。
 
 ## 4. Dump
 
@@ -52,47 +52,59 @@
 
 ## 5. 建立编译环境
 
-1. 启动一次装了 MelonLoader 的游戏，让它生成 `MelonLoader/Il2CppAssemblies/`。
-2. 这个目录里的 `Assembly-CSharp.dll` 才是你编译 Mod 时该引用的程序集，不是游戏原目录里那个。
-3. 把 `MelonLoader` 目录和 `Il2CppAssemblies` 目录的路径填进 Mod 的 csproj。
+1. 装好 BepInEx 6，启动游戏一次，让它生成 `BepInEx/interop/` 和 `BepInEx/core/`。
+2. 编译 Mod 要引用的是 `BepInEx/interop/Assembly-CSharp.dll`（游戏类型）和 `BepInEx/core/` 下的 BepInEx / Harmony / Il2CppInterop 程序集，**不是**游戏原目录里那个 `Assembly-CSharp.dll`。
+3. 用 `templates/bepinex-mod/`，把 `IronNestDir` 指到游戏根目录，csproj 会自动拼出 `BepInEx/core` 和 `BepInEx/interop` 的引用路径：
+
+```powershell
+dotnet build .\BepInExMod.csproj -c Release -p:IronNestDir="C:\Games\Iron Nest Heavy Turret Simulator"
+```
+
+关于 interop 程序集：BepInEx 会在首次启动时生成它们。如果目录是空的，先启动一次游戏，不要手工造 DLL。
 
 ## 6. 先日志，后补丁
 
-第一版 Mod 只做一件事：在 `OnInitializeMelon` 打一行日志，确认加载成功。
+第一版插件只做一件事：在 `Load()` 里打一行日志，确认加载成功。
 
 ```csharp
-public override void OnInitializeMelon()
+[BepInPlugin("dev.me.mymod", "MyMod", "0.1.0")]
+public sealed class Core : BasePlugin
 {
-    LoggerInstance.Msg("MyMod loaded.");
+    public override void Load()
+    {
+        Log.LogInfo("MyMod loaded.");
+    }
 }
 ```
+
+编译后把 DLL 放进 `BepInEx/plugins/`，启动游戏看 `BepInEx/LogOutput.log` 有没有 `MyMod loaded.`。
 
 加载成功后再加 Harmony 补丁。一次只加一个补丁，一次只验证一个行为。同时改三处，崩了不知道是哪一处。
 
 ## 7. 验证补丁真的进了
 
-- 看 `MelonLoader/Latest.log`，确认 `PatchAll` 没有报 `PatchException`。
-- 在 Prefix 里打日志，确认方法被调用。
+- 看 `BepInEx/LogOutput.log`，确认 `Harmony.CreateAndPatchAll` 没有报 `PatchException`。
+- 在 Prefix 里用 `ManualLogSource.LogInfo` 打日志，确认方法被调用。
 - 如果日志没出现，先确认方法有没有被 IL2CPP 内联，再确认你 patch 的是不是正确的重载。
 
 ## 8. 游戏更新后
 
 RVA、TypeDefIndex、甚至方法签名都可能变。标准动作：
 
-1. 删掉旧 `dumps/` 和 `MelonLoader/Il2CppAssemblies/`。
+1. 删掉旧 `dumps/`；让 BepInEx 重新生成 `BepInEx/interop/`（关掉游戏后删该目录，下次启动会重建）。
 2. 重新 dump。
 3. 重新搜索目标类型，核对签名。
 4. 重新编译 Mod。
 
-不要试图在旧 dump 上猜偏移。
+不要试图在旧 dump 上猜偏移。如果插件用的是类型名 + 方法名 patch（本仓库模板的写法），只要名字没变就不用改代码；硬编码 RVA 的插件则必须跟着改。
 
 ## 排查表
 
 | 现象 | 常见原因 | 处理 |
 |---|---|---|
 | `dump.cs` 里搜不到类型 | metadata 版本不支持 / 加密 / 搜错命名空间 | 升级 Il2CppDumper；试 Il2CppInspector；用 `find_string.py` 反查文案 |
-| 编译报类型找不到 | 引用了游戏原目录的 DLL，而不是 `Il2CppAssemblies` | 改 HintPath，清 `obj/bin` 重编 |
-| `TypeLoadException` | 程序集版本不匹配，或游戏更新后旧程序集残留 | 删除 `Il2CppAssemblies` 让 Loader 重新生成 |
+| 编译报类型找不到 | 引用了游戏原目录的 DLL，而不是 `BepInEx/interop`；或 `-p:IronNestDir` 指错 | 核对 csproj 的 HintPath，清 `obj/bin` 重编 |
+| `TypeLoadException` | 程序集版本不匹配，或游戏更新后 interop 残留 | 关掉游戏，删除 `BepInEx/interop` 让 BepInEx 下次启动重新生成 |
 | 补丁不触发 | 方法被内联 / 不是实际执行的重载 / patch 错类型 | patch 调用方；用 `--kind method` 列出所有重载；检查泛型实例 |
 | 进游戏直接崩 | 补丁签名和运行时不一致，或过早访问游戏对象 | 先去掉补丁验证 Mod 能加载；把逻辑推迟到场景加载后 |
 | 字符串搜不到 | 文案在 AssetBundle / 本地化表里，不在代码里 | 换资源解包工具，不要死磕 `stringliteral.json` |

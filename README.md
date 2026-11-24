@@ -79,10 +79,10 @@ Iron Nest 的实测结论见两份文档：
 
 ```text
 $ python scripts/find_type.py dumps/iron-nest/dump.cs Telegraph --kind class
-dump.cs:18422  [class] IronNest.UI.TelegraphPanel : MonoBehaviour  // TypeDefIndex: 1187
+dump.cs:18422  [class] IronNest.UI.TelegraphPanel  |  public class TelegraphPanel : MonoBehaviour // TypeDefIndex: 1187
 
 $ python scripts/find_type.py dumps/iron-nest/dump.cs SetText --kind method
-IronNest.UI.TelegraphPanel  (dump.cs:18422)
+IronNest.UI.TelegraphPanel  (dump.cs:18422)  // TypeDefIndex: 1187
   dump.cs:18440  [method] public void SetText(string text)  // RVA: 0x1A2B3C0 Offset: 0x1A2B3C0 VA: 0x1A2B3C0
 ```
 

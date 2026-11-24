@@ -65,18 +65,34 @@ $ext = [System.IO.Path]::GetExtension($dumperPath)
 $env:DOTNET_ROLL_FORWARD = "LatestMajor"
 
 # A fresh Il2CppDumper clone waits for a key press and hangs unattended runs.
-$configPath = Join-Path $dumperDir "config.json"
-if (Test-Path -LiteralPath $configPath -PathType Leaf) {
+# The config can live next to the DLL, or at the project root of a source build
+# (e.g. bin/Release/net8.0 -> ../../../config.json). Search both, then fall
+# back to piping a newline into the process.
+$configCandidates = @(
+    (Join-Path $dumperDir "config.json"),
+    (Join-Path (Split-Path -Parent $dumperDir) "config.json"),
+    (Join-Path (Split-Path -Parent (Split-Path -Parent $dumperDir)) "config.json"),
+    (Join-Path (Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $dumperDir))) "config.json")
+) | Where-Object { $_ -and (Test-Path -LiteralPath $_ -PathType Leaf) } | Select-Object -Unique
+
+$configFixed = $false
+foreach ($configPath in $configCandidates) {
     try {
-        $config = Get-Content -LiteralPath $configPath -Raw | ConvertFrom-Json
-        if ($config.PSObject.Properties["RequireAnyKey"] -and $config.RequireAnyKey) {
-            $config.RequireAnyKey = $false
-            $config | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $configPath -Encoding UTF8
-            Write-Host "Set RequireAnyKey=false in $configPath" -ForegroundColor Yellow
+        $raw = Get-Content -LiteralPath $configPath -Raw
+        $config = $raw | ConvertFrom-Json
+        if (-not ($config.PSObject.Properties["RequireAnyKey"] -and $config.RequireAnyKey)) {
+            continue
         }
+        $config.RequireAnyKey = $false
+        $config | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $configPath -Encoding UTF8
+        Write-Host "Set RequireAnyKey=false in $configPath" -ForegroundColor Yellow
+        $configFixed = $true
     } catch {
         Write-Warning "Could not update $configPath : $($_.Exception.Message)"
     }
+}
+if (-not $configFixed) {
+    Write-Warning "RequireAnyKey config not found or already false; feeding a newline to stdin as fallback."
 }
 
 Write-Host "GameAssembly : $gamePath"
@@ -87,10 +103,12 @@ Write-Host ""
 
 Push-Location $dumperDir
 try {
+    # A single newline satisfies "Press any key" when the config fix did not
+    # apply. Harmless when RequireAnyKey is already false.
     if ($ext -ieq ".dll") {
-        & dotnet $dumperPath $gamePath $metaPath $outPath
+        "" | & dotnet $dumperPath $gamePath $metaPath $outPath
     } else {
-        & $dumperPath $gamePath $metaPath $outPath
+        "" | & $dumperPath $gamePath $metaPath $outPath
     }
 } finally {
     Pop-Location
