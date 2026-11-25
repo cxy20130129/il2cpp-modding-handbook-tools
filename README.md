@@ -20,7 +20,7 @@
 | `scripts/find_string.py`     | 在 `stringliteral.json` 里搜字符串字面量，定位 UI 文案和电报文本      |
 | `scripts/disasm_method.py`   | 按 RVA 反汇编 native 方法，解析字符串引用                           |
 | `scripts/field_offsets.py`   | 提取类的字段偏移表，支持正则和 Markdown/JSON/CSV 输出             |
-| `scripts/build_mission_rules.py` | 从三份任务 dump 生成可配置的字段补丁规则 JSON                 |
+| `scripts/build_mission_rules.py` | 从三份任务 dump 生成可配置的字段补丁规则 JSON，`--mission` 可覆盖派生的任务名 |
 | `templates/bepinex-mod/`     | BepInEx 6 IL2CPP 插件骨架，已用本机 Iron Nest 编译验证              |
 | `templates/melonloader-mod/` | 能直接 `dotnet build` 的 MelonLoader Mod 骨架            |
 | `docs/workflow.md`           | 从拿到游戏到验证 Hook 的完整流程                                |
@@ -134,7 +134,7 @@ Not tied to one game. Examples use Iron Nest: Heavy Turret Simulator, but the sc
 | `scripts/find_string.py` | Search string literals in `stringliteral.json` to locate UI text and teleprinter messages |
 | `scripts/disasm_method.py` | Disassemble a native method by RVA and resolve string references |
 | `scripts/field_offsets.py` | Extract field offset tables; regex matching and Markdown/JSON/CSV output |
-| `scripts/build_mission_rules.py` | Generate configurable field-patch rules from three mission dumps |
+| `scripts/build_mission_rules.py` | Generate configurable field-patch rules from three mission dumps; `--mission` overrides the derived mission name |
 | `templates/bepinex-mod/` | BepInEx 6 IL2CPP plugin skeleton, compile-verified against a real Iron Nest install |
 | `templates/melonloader-mod/` | MelonLoader mod skeleton that builds with `dotnet build` |
 | `docs/workflow.md` | Full workflow from a fresh game install to a verified Hook |

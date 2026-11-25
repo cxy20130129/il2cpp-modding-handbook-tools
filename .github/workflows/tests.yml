@@ -1,0 +1,40 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  unittest:
+    name: Python ${{ matrix.python-version }}
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Run unit tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Verify rule generation is reproducible
+        run: |
+          python scripts/build_mission_rules.py -o missions/_ci_rules.json
+          python -c "import pathlib; a=pathlib.Path('missions/extreme-counter-battery.json').read_bytes(); b=pathlib.Path('missions/_ci_rules.json').read_bytes(); assert a==b, 'generated rules differ from committed file'"
+          del missions\_ci_rules.json
+        shell: pwsh
+
+# dotnet build is deliberately NOT in CI: the BepInEx template references
+# game-specific interop assemblies (BepInEx/interop/*.dll) that are not in the
+# repo. Compile locally with:
+#   dotnet build templates/bepinex-mod/BepInExMod.csproj -c Release -p:IronNestDir="C:\Games\Iron Nest Heavy Turret Simulator"

@@ -136,10 +136,19 @@ JSON 规则**只改已有节点的标量字段**。以下改动做不到，仍�
 
 ## 6. 派生新任务
 
-1. 复制 `missions/extreme-counter-battery.json`，改 `mission` / `base_graph` 和 `rules`。
-2. 只写真正要改的字段，`set` 里的键必须是上表的 C# 字段名。
-3. 编译好的插件从固定文件名读取，派生任务要么改 `RuleFileName`，要么把新规则放到搜索路径的第一个位置。
-4. 游戏更新后用 `scripts/field_offsets.py` 和 `scripts/find_type.py` 核对字段名是否变了；反射写入失败会在日志里报 `cannot set <字段>`。
+1. 准备新任务的三份 dump（`structure_base.txt` / `structure_new.txt` / `result.txt`），放到一个目录里。
+2. 用生成器产出规则，`--mission` 只在新任务名和 graph id 不同时才需要：
+
+   ```powershell
+   python .\scripts\build_mission_rules.py `
+     --dumps .\dumps\my-mission --mission MyMission `
+     -o .\missions\my-mission.json
+   ```
+
+   不给 `--mission` 时，默认值取 `structure_new.txt` 第一行的 graph id。
+3. 核对生成的规则：`set` 里的键必须是上表的 C# 字段名，不需要的改动直接从 JSON 里删掉。
+4. 编译好的插件从固定文件名读取，派生任务要么改 `RuleFileName`，要么把新规则放到搜索路径的第一个位置。
+5. 游戏更新后用 `scripts/field_offsets.py` 和 `scripts/find_type.py` 核对字段名是否变了；反射写入失败会在日志里报 `cannot set <字段>`。仓库里的 `CommittedRuleGuardTests` 会在 dump 更新但 JSON 没重新生成时直接失败。
 
 ## 7. 验证清单
 

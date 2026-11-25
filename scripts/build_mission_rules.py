@@ -304,10 +304,16 @@ def find_not_covered(
     return result
 
 
-def build_document(base: Graph, new: Graph, rules: list[dict[str, object]], evidence: list[str]) -> dict[str, object]:
+def build_document(
+    base: Graph,
+    new: Graph,
+    rules: list[dict[str, object]],
+    evidence: list[str],
+    mission_name: str,
+) -> dict[str, object]:
     not_covered = find_not_covered(base, new, rules, evidence)
     return {
-        "mission": "ExtremeCounterBattery",
+        "mission": mission_name,
         "base_graph": base.mission_id,
         "target_graph": new.mission_id,
         "base_node_count": len(base.nodes),
@@ -334,6 +340,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--new", type=Path, default=None, help="override structure_new.txt")
     parser.add_argument("--result", type=Path, default=None, help="override result.txt")
     parser.add_argument(
+        "--mission", default=None,
+        help="mission name for the generated JSON (default: graph id from --new)",
+    )
+    parser.add_argument(
         "-o", "--out", type=Path,
         default=Path("missions/extreme-counter-battery.json"),
     )
@@ -357,8 +367,13 @@ def main(argv: list[str] | None = None) -> int:
         print("error: could not parse any nodes from the dumps", file=sys.stderr)
         return 2
 
+    mission_name = args.mission or new.mission_id
+    if not mission_name:
+        print("error: could not derive mission name from --new; pass --mission", file=sys.stderr)
+        return 2
+
     rules = build_rules(base, new, collect_evidence(result_path))
-    document = build_document(base, new, rules, collect_evidence(result_path))
+    document = build_document(base, new, rules, collect_evidence(result_path), mission_name)
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(
